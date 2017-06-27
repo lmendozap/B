@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Bienvenido</title>
+</h:head>
+<h:body>
+	<p:growl widgetVar="growl" showDetail="true" />
+
+	<h:form id="formulario">
+
+		<p:layout fullPage="true">
+			<p:layoutUnit position="north" size="100">
+				<h1>DATOS DE COMPORTAMIENTO CLIMATICO (1981-1999)</h1>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" size="20%" header="Integrantes">
+				<p:separator />
+				<p:outputLabel value=" - Mendoza Pimentel Luis Arturo" />
+				<p:separator />
+				<p:outputLabel value=" - Challco Luis Miguel  " />
+				<p:separator />
+				<p:outputLabel value=" - Cconislla Janampa Marisol" />
+				<p:separator />
+				<p:outputLabel value=" - Chilin Valle Víctor Rafael" />
+				<p:separator />
+			</p:layoutUnit>
+
+			<p:layoutUnit position="east" size="50%" header="Lecturas Acumuladas">
+				<p:dataTable id="dtAcumulada" var="medida"
+					value="#{contadorController.medicionesAcumuladas}">
+					<p:column headerText="Año">
+						<h:outputText value="#{medida.anio}" />
+					</p:column>
+
+					<p:column headerText="Mes">
+						<h:outputText value="#{medida.mes}" />
+					</p:column>
+
+					<p:column headerText="Temperatura">
+						<h:outputText value="#{medida.temperatura}" />
+					</p:column>
+
+					<p:column headerText="Precipitacion">
+						<h:outputText value="#{medida.precipitacion}" />
+					</p:column>
+				</p:dataTable>
+			</p:layoutUnit>
+			<p:layoutUnit position="center" size="35%" header="Lectura Actual">
+				<p:outputPanel>
+					<h:panelGrid width="100%" columns="2" cellpadding="5">
+						<p:commandButton value="Iniciar"
+							actionListener="#{contadorController.incrementar}"
+							 />
+						<p:commandButton value="Parar"
+							actionListener="#{contadorController.parar}" />
+					</h:panelGrid>
+				</p:outputPanel>
+				
+				<p:separator />
+
+				<h:panelGrid id="panelMed2" columns="2" style="width:50%" columnClasses="logo,detail">
+					<p:graphicImage url="/imagenes/#{contadorController.colorTemp}"  />
+
+					<p:outputPanel>
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText value="Temperatura" />
+							<h:outputText value="#{contadorController.medida.temperatura}°C" 
+								style="font-weight: bold" />
+						</h:panelGrid>
+					</p:outputPanel>
+				</h:panelGrid>
+				<h:panelGrid id="panelMed" columns="2" style="width:50%" columnClasses="logo,detail">
+					<p:graphicImage url="/imagenes/#{contadorController.colorPreci}"  />
+
+					<p:outputPanel>
+						<h:panelGrid columns="2" cellpadding="5">
+							<h:outputText value="Precipitación:" />
+							<h:outputText value="#{contadorController.medida.precipitacion}mm"
+								style="font-weight: bold" />
+						</h:panelGrid>
+					</p:outputPanel>
+				</h:panelGrid>
+
+
+				<p:separator />
+
+				
+			</p:layoutUnit>
+		</p:layout>
+
+
+
+
+
+
+
+
+	</h:form>
+
+
+	<!-- ************************** IMPLEMENTACION DEL WEB SOCKET ++++++++++++++++++++++++++++++++++ -->
+	<p:socket onMessage="handleMessage" channel="/counter">
+		<p:ajax event="message"
+			update=":formulario:dtAcumulada,:formulario:panelMed,:formulario:panelMed2" />
+	</p:socket>
+
+	<script type="text/javascript">
+		function handleMessage(facesmessage) {
+			facesmessage.severity = 'info';
+			PF('growl').show([ facesmessage ]);
+		}
+	</script>
+</h:body>
+</html>
