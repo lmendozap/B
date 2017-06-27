@@ -15,7 +15,9 @@ import javax.swing.Timer;
 import org.primefaces.push.EventBus;
 import org.primefaces.push.EventBusFactory;
 
+import com.DAO.ContadorDAO;
 import com.model.Medida;
+import com.resources.MyBatisConnectionFactory;
 
 @ManagedBean
 @ApplicationScoped
@@ -31,6 +33,7 @@ public class ContadorController implements Serializable {
 	private String colorTemp;
 	private String colorPreci;
 	private Timer timer;
+	private ContadorDAO contadorDAO;
 	public ContadorController() {
 		init();
 	}
@@ -38,6 +41,8 @@ public class ContadorController implements Serializable {
 	@PostConstruct
 	public void init() {
 		System.out.println("Inicializando el Controller...");
+		contadorDAO = new ContadorDAO(MyBatisConnectionFactory.getSqlSessionFactory());
+		
 		contador = 0;
 		mediciones = new ArrayList<>();
 		medicionesAleatorias = new ArrayList<>();
@@ -63,7 +68,7 @@ public class ContadorController implements Serializable {
 	
 	public void incrementar() {
 		
-		timer = new Timer (3000, new ActionListener () 
+		timer = new Timer (60000, new ActionListener () 
 		{ 
 		    public void actionPerformed(ActionEvent e) 
 		    { 
@@ -85,19 +90,8 @@ public class ContadorController implements Serializable {
 	public void parar(){
 		timer.stop();
 	}
-	public void inicializarMedidas(){
-		mediciones.add( new Medida("2001","1",10,3));
-		mediciones.add( new Medida("2002","2",11,5));
-		mediciones.add( new Medida("2003","3",1,3));
-		mediciones.add( new Medida("2004","4",2,60));
-		mediciones.add( new Medida("2005","5",3,3));
-		mediciones.add( new Medida("2006","6",23,16));
-		mediciones.add( new Medida("2007","7",5,3));
-		mediciones.add( new Medida("2008","8",7,75));
-		mediciones.add( new Medida("2009","9",4,3));
-		mediciones.add( new Medida("2010","10",18,-1));
-		mediciones.add( new Medida("2011","11",4,3));
-		
+	public void inicializarMedidas(){		
+		mediciones=contadorDAO.selectAll();		
 	}
 	
 	public void  calcularColor(){
@@ -117,6 +111,7 @@ public class ContadorController implements Serializable {
 			colorPreci="rojo.png";
 		}
 	}
+	
 	public int getContador() {
 		return contador;
 	}

@@ -1,22 +1,32 @@
 package com.model;
 
 public class Medida {
+	private String pais;
 	private String anio;
 	private String mes;
 	private int temperatura;
 	private int precipitacion;
 	
-	public Medida(){
-		
+	public Medida(){		
 	}
 	
-	public Medida(String anio,String mes,int temperatura,int precipitacion){
+	public Medida(String pais,String anio,String mes,int temperatura,int precipitacion){
+		this.pais=pais;
 		this.anio=anio;
 		this.mes=mes;
 		this.temperatura=temperatura;
 		this.precipitacion=precipitacion;
 	}
 	
+	
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
+	}
+
 	public String getAnio() {
 		return anio;
 	}
